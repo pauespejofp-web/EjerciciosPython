@@ -1,0 +1,53 @@
+import random
+
+lista_origen = [
+    "sol", "mar", "casa", "coche", "libro", "teclado", "mesa", "silla",
+    "puerta", "luz", "pan", "agua", "vino", "fuego", "tierra", "aire",
+    "arbol", "flor", "perro", "gato", "pajaro", "pez", "rio", "python", "datos"
+]
+
+def palabrasVal():
+    validas = []
+    for palabra in lista_origen:
+        if 3 <= len(palabra) <= 7:
+            validas.append(palabra)
+    return validas[:20]
+
+lista_20_palabras = palabrasVal()
+palabra_secreta = random.choice(lista_20_palabras)
+intentos = len(palabra_secreta) * 2
+
+print("===============================")
+print("¡BIENVENIDO AL AHORCADO!")
+print("===============================")
+
+tablero = ["_"] * len(palabra_secreta)
+usadas = []
+
+while intentos > 0:
+    print(*tablero)
+    print(f"\nTienes {intentos} intentos restantes.")
+    letraUser = input("Introduce la letra: ").lower()
+    u
+    if len(letraUser) != 1 or not letraUser.isalpha():
+        print("Introduce solo UNA letra.")
+        continue
+    if letraUser in usadas:
+        print("Ya has probado esa letra.")
+        continue
+    usadas.append(letraUser)
+
+    if letraUser in palabra_secreta:
+        for i in range(len(palabra_secreta)):
+            if palabra_secreta[i] == letraUser:
+                tablero[i] = letraUser
+    else:
+        print(f"\n---- La letra '{letraUser}' no está en la palabra ----")
+        intentos -= 1
+
+    if "_" not in tablero:
+        print(*tablero)
+        print("¡HAS GANADO! Saliendo del juego")
+        break
+else:
+    print(f"\n¡Has perdido! La palabra era: {palabra_secreta}")
