@@ -1,0 +1,81 @@
+'''Tres en ratlla (2p)'''
+
+
+tablero = [
+    ['-', '-', '-'],
+    ['-', '-', '-'],
+    ['-', '-', '-']
+]
+def comprobar_ganador(j):
+    if tablero[0][0] == j and tablero[0][1] == j and tablero[0][2] == j:
+        return True
+    if tablero[1][0] == j and tablero[1][1] == j and tablero[1][2] == j:
+        return True
+    if tablero[2][0] == j and tablero[2][1] == j and tablero[2][2] == j:
+        return True
+
+    if tablero[0][0] == j and tablero[1][0] == j and tablero[2][0] == j:
+        return True
+    if tablero[0][1] == j and tablero[1][1] == j and tablero[2][1] == j:
+        return True
+    if tablero[0][2] == j and tablero[1][2] == j and tablero[2][2] == j:
+        return True
+
+    if tablero[0][0] == j and tablero[1][1] == j and tablero[2][2] == j:
+        return True
+    if tablero[0][2] == j and tablero[1][1] == j and tablero[2][0] == j:
+        return True
+
+    return False
+def mostrar_tablero():
+    for fila in tablero:
+        for casilla in fila:
+            print(casilla, end=' ')
+        print()
+
+mostrar_tablero()
+
+
+turnos = 0
+while turnos < 9:
+    print("\nTurno del Jugador 1 (X):")
+
+    casilla_valida = False
+    while not casilla_valida:
+      columna = int(input("Introduce la columna (0, 1 o 2): "))
+      fila = int(input("Introduce la fila (0, 1 o 2): "))
+      
+      if tablero[fila][columna] == 'O' or tablero[fila][columna] == 'X':
+          print("Ya hay una ficha en esa posición")
+      else:
+        casilla_valida = True
+
+    tablero[fila][columna] = 'X'
+    turnos += 1
+    mostrar_tablero()
+    if comprobar_ganador('X'):
+      print("\n¡GANA EL JUGADOR 1 (X)!")
+      break
+
+    if turnos == 9:
+     print("Se acabó el juego, no ha ganado nadie")
+     break
+
+    
+    print("\nTurno del Jugador 2 (O):")
+    casilla_valida = False
+    while not casilla_valida:
+      columna = int(input("Introduce la columna (0, 1 o 2): "))
+      fila = int(input("Introduce la fila (0, 1 o 2): "))
+      
+      if tablero[fila][columna] == 'O' or tablero[fila][columna] == 'X':
+          print("Ya hay una ficha en esa posición")
+      else:
+        casilla_valida = True
+
+    tablero[fila][columna] = 'O'
+    turnos += 1
+    mostrar_tablero()
+    if comprobar_ganador('O'):
+      print("\n¡GANA EL JUGADOR 1 (O)!")
+      break
