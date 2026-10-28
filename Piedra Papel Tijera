@@ -1,0 +1,65 @@
+'''Pedra - Paper - Tisores: Guanyador el primer que arriba a 3 punts. (2p)'''
+import random
+
+menu = "Bienvenido a Piedra Papel y Tijeras, elige tu opcion:\n1-Piedra\n2-Papel\n3-Tijera\n"
+print(menu)
+
+puntos_user = 0
+puntos_ia = 0
+
+opciones = {
+    1: "Piedra ",
+    2: "Papel ",
+    3: "Tijera "
+}
+
+
+while puntos_user < 3 and puntos_ia < 3:
+  print("--------------------------------")
+
+  opcionUser = int(input('Que opcion eliges: '))
+  opcionIA = (random.randint(1, 3))
+
+  if opcionUser == opcionIA:
+    print("\nHa salido empate!!! \n")
+
+  print(f'\nla opcion del usuario ha sido: {opciones[opcionUser]}\n')
+  print(f'la opcion de la IA ha sido: {opciones[opcionIA]}\n')
+
+  match opcionUser, opcionIA:
+      case (1, 2):
+        print('Ha ganado la IA, Piedra no vence Papel')
+        puntos_ia += 1
+
+      case (1, 3):
+        print('Ha ganado el User, Piedra vence Tijera')
+        puntos_user += 1
+
+      case (2, 1):
+        print("Ha ganado el User, Papel vence Piedra")
+        puntos_user += 1
+
+      case (2, 3):
+        print("Ha ganado la IA, Papel no vence Tijera")
+        puntos_ia += 1
+
+      case (3, 1):
+        print("Ha ganado la IA, Tijera no vence Piedra")
+        puntos_ia += 1
+
+      case (3, 2):
+        print("Ha ganado el User, Tijera vence Papel")
+        puntos_user += 1
+  print("\n")
+  print(f'Puntos de la ia: {puntos_ia}\n')
+  print(f'Puntos del user: {puntos_user}\n')
+
+  print("================================")
+  if  puntos_user == 3:
+    print("Ha ganado el user")
+  elif  puntos_ia == 3:
+    print("Ha ganado la IA")
+
+    print("================================")
+
+
