@@ -1,0 +1,168 @@
+import random
+
+palos = ["Corazones", "Diamantes", "Treboles", "Picas"]
+valores = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+
+
+def crear_baraja():
+    baraja = []
+    for palo in palos:
+        for valor in valores:
+            baraja.append((valor, palo))
+    random.shuffle(baraja)
+    return baraja
+
+
+def valor_carta(carta):
+    if carta[0] in ["J", "Q", "K"]:
+        return 10
+    if carta[0] == "A":
+        return 11
+    return int(carta[0])
+
+
+def calcular_total(mano):
+    total = 0
+    ases = 0
+    for carta in mano:
+        total += valor_carta(carta)
+        if carta[0] == "A":
+            ases += 1
+    while total > 21 and ases > 0:
+        total -= 10
+        ases -= 1
+    return total
+
+
+def es_blackjack(mano):
+    return len(mano) == 2 and calcular_total(mano) == 21
+
+
+def mostrar_mano(nombre, mano):
+    texto = ""
+    for carta in mano:
+        texto += carta[0] + " de " + carta[1] + ", "
+    print(nombre + ": " + texto + "(total: " + str(calcular_total(mano)) + ")")
+
+
+def turno_jugador(nombre, mano, baraja):
+    print("\nTurno de " + nombre)
+    mostrar_mano(nombre, mano)
+    if es_blackjack(mano):
+        print("Blackjack!")
+        return
+    while True:
+        total = calcular_total(mano)
+        if total > 21:
+            print(nombre + " se pasa")
+            return
+        if total == 21:
+            return
+        opcion = input(nombre + ", pides carta o te plantas? (p/n): ").lower()
+        if opcion == "p":
+            mano.append(baraja.pop())
+            mostrar_mano(nombre, mano)
+        elif opcion == "n":
+            return
+        else:
+            print("Opcion no valida")
+
+
+def jugar(num_jugadores):
+    baraja = crear_baraja()
+    crupier = []
+    jugadores = []
+    for i in range(num_jugadores):
+        jugadores.append([])
+
+    crupier.append(baraja.pop())
+    for ronda in range(2):
+        for mano in jugadores:
+            mano.append(baraja.pop())
+    crupier.append(baraja.pop())
+
+    print("\n--- NUEVA PARTIDA ---")
+    print("Carta visible del crupier: " + crupier[0][0] + " de " + crupier[0][1])
+
+    for i in range(num_jugadores):
+        turno_jugador("Jugador " + str(i + 1), jugadores[i], baraja)
+
+    print("\nEl crupier levanta su segunda carta")
+    mostrar_mano("Crupier", crupier)
+
+    alguien_vivo = False
+    for mano in jugadores:
+        if calcular_total(mano) <= 21:
+            alguien_vivo = True
+
+    if alguien_vivo and not es_blackjack(crupier):
+        while calcular_total(crupier) < 17:
+            crupier.append(baraja.pop())
+            print("El crupier roba una carta")
+            mostrar_mano("Crupier", crupier)
+
+    total_crupier = calcular_total(crupier)
+    print("\n--- RESULTADOS ---")
+    resultados = []
+    for i in range(num_jugadores):
+        mano = jugadores[i]
+        total = calcular_total(mano)
+        nombre = "Jugador " + str(i + 1)
+
+        if total > 21:
+            print(nombre + ": pierde, se paso")
+            resultados.append("perdida")
+        elif es_blackjack(mano) and not es_blackjack(crupier):
+            print(nombre + ": blackjack, gana")
+            resultados.append("ganada")
+        elif es_blackjack(mano) and es_blackjack(crupier):
+            print(nombre + ": empate, los dos tienen blackjack")
+            resultados.append("empate")
+        elif es_blackjack(crupier):
+            print(nombre + ": pierde, el crupier tiene blackjack")
+            resultados.append("perdida")
+        elif total_crupier > 21:
+            print(nombre + ": gana, el crupier se paso")
+            resultados.append("ganada")
+        elif total > total_crupier:
+            print(nombre + ": gana con " + str(total) + " contra " + str(total_crupier))
+            resultados.append("ganada")
+        elif total < total_crupier:
+            print(nombre + ": pierde con " + str(total) + " contra " + str(total_crupier))
+            resultados.append("perdida")
+        else:
+            print(nombre + ": empate con " + str(total))
+            resultados.append("empate")
+    return resultados
+
+
+num_jugadores = 0
+while num_jugadores < 1 or num_jugadores > 5:
+    entrada = input("Cuantos jugadores? (1-5): ")
+    if entrada.isdigit():
+        num_jugadores = int(entrada)
+    else:
+        print("Escribe un numero")
+
+ganadas = [0] * num_jugadores
+perdidas = [0] * num_jugadores
+empates = [0] * num_jugadores
+
+seguir = "s"
+while seguir == "s":
+    resultados = jugar(num_jugadores)
+    for i in range(num_jugadores):
+        if resultados[i] == "ganada":
+            ganadas[i] += 1
+        elif resultados[i] == "perdida":
+            perdidas[i] += 1
+        else:
+            empates[i] += 1
+
+    print("\n--- MARCADOR ---")
+    for i in range(num_jugadores):
+        print("Jugador " + str(i + 1) + " -> Ganadas: " + str(ganadas[i]) + " | Perdidas: " + str(perdidas[i]) + " | Empates: " + str(empates[i]))
+
+    seguir = input("\nOtra partida? (s/n): ").lower()
+
+print("Gracias por jugar")
